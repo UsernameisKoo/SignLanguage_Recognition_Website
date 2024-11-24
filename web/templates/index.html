@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #FFFFFF;
+            overflow: hidden;
+        }
+
+        #menu {
+            position: fixed;
+            top: 0;
+            left: 0%;
+            width: 13%;
+            height: 100%;
+            background-color: #007BFF;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #menu h2 {
+            font-size: 24px;
+            margin: 0 0 20px;
+            text-align: center;
+        }
+
+        #menu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #menu ul li {
+            margin: 15px 0;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #menu ul li:hover {
+            background-color: #0056b3;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #title {
+            position: fixed;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #title h1 {
+            font-size: 36px;
+            margin: 0;
+        }
+
+        #title hr {
+            margin: 10px auto;
+            width: 100%;
+            border: none;
+            border-top: 4px solid #007BFF;
+        }
+
+        #placeholder-image {
+            position: fixed;
+            top: 10%; /* 화면 상단에서 위치 */
+            left: 15%; /* 화면 왼쪽에서 위치 */
+            width: 90%; /* 전체 화면 대비 가로 비율 */
+            height: 100%; /* 전체 화면 대비 세로 비율 */
+            background-image: url("{{ url_for('static', filename='images/background.jpg') }}"); /* 이미지 경로 */
+            background-size: contain; /* 이미지 비율 유지하며 전체 표시 */
+            background-repeat: no-repeat; /* 반복 방지 */
+            //background-position: center; /* 이미지 중심 정렬 */
+            z-index: -1; /* 가장 아래 레이어로 설정 */
+        }
+
+        #video-container {
+            position: fixed;
+            top: 20%;
+            left: 18%;
+            width: 640px;
+            height: 480px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid #007BFF;
+            border-radius: 10px;
+        }
+
+        #start-camera {
+            position: fixed;
+            top: 35%;
+            right: 40%;
+            cursor: pointer;
+            color: #007BFF;
+            font-size: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: white;
+            border: 4px solid #007BFF;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        #start-camera:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        #sentence-container {
+            position: fixed;
+            top: 20%;
+            right: 2%;
+            font-size: 18px;
+            color: #333;
+            padding: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 500px;
+            min-height: 150px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #sentence-container h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+        #sentence {
+            display: inline;
+        }
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: #333;
+            vertical-align: bottom;
+            animation: blink 0.7s steps(2, start) infinite;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+        #underline {
+            width: 100%;
+            height: 2px;
+            background-color: #007BFF;
+            margin-top: 10px;
+        }
+        #action-buttons {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Both buttons will be blue */
+        .button.complete,
+        .button.clear {
+            background-color: white; /* White background */
+            color: #007bff; /* Blue text */
+            border: 2px solid #007bff; /* Blue border */
+        }
+
+        .button.complete:hover,
+        .button.clear:hover {
+            background-color: #007bff; /* Blue background on hover */
+            color: white; /* White text on hover */
+            border: 2px solid #007bff; /* Blue border stays the same */
+        }
+
+        .button.complete:active,
+        .button.clear:active {
+            background-color: #007bff; /* Blue background on click */
+            color: white; /* White text on click */
+            border: 2px solid #007bff; /* Blue border stays the same */
+        }
+        #welcome-message {
+            position: fixed; /* 화면에 고정 */
+            top: 40%; /* 화면 상단에서의 위치 */
+            right: 5%; /* 화면 오른쪽에서의 위치 */
+            width: 43%; /* 메시지의 가로 폭 */
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+            text-align: left; /* 텍스트를 왼쪽 정렬 */
+            padding: 20px; /* 내부 여백 추가 */
+            background-color: #FFFFFF; /* 배경색 */
+            transition: opacity 0.5s ease; /* 사라질 때 부드러운 효과 */
+        }
+        
+        #welcome-message.hidden {
+            opacity: 0; /* 투명하게 만듦 */
+            pointer-events: none; /* 클릭 불가 */
+            height: 0; /* 높이를 제거하여 자리 차지 방지 */
+            overflow: hidden; /* 내용 숨김 */
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="title">
+        <h1>Sign Language Recognition</h1>
+        <hr>
+    </div>
+    <div id="menu">
+        <h2>메뉴</h2>
+        <ul>
+            <li>카메라 설정</li>
+            <li>홈페이지</li>
+            <li>수어에 대하여</li>
+            <li>설정</li>
+        </ul>
+    </div>
+    
+    <div id="welcome-message">
+        <h2>Welcome to the Sign Language Real-Time Translation Service!</h2>
+        <p>
+            Our sign language real-time translation website is an innovative platform designed to bridge communication 
+            between the hearing-impaired and non-hearing-impaired. It enables anyone, even those unfamiliar with sign 
+            language, to communicate effortlessly by leveraging AI technology to translate sign language into text in 
+            real time.
+        </p>
+    </div>
+    
+    <div id="start-camera" onclick="startCamera()">Open Camera</div>
+    
+    <div id="placeholder-image"></div>
+
+    <div id="start-camera" onclick="startCamera()">Open Camera</div>
+
+    <div id="video-container">
+        <img id="video-feed" src="" width="640" height="480" alt="Video Feed">
+    </div>
+    <div id="sentence-container" style="display: none;">
+        <h2>Sentence</h2>
+        <div id="sentence"></div><div class="cursor"></div>
+        <div id="underline"></div>
+        <div id="action-buttons">
+            <button class="button complete" onclick="completeSentence()">완료</button>
+            <button class="button clear" onclick="clearSentence()">삭제</button>
+        </div>
+    </div>
+
+    <script>
+        function startCamera() {
+            fetch('/start_camera', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "Camera started") {
+                        // 웰컴 메시지 숨기기
+                        const welcomeMessage = document.getElementById('welcome-message');
+                        if (welcomeMessage) {
+                            welcomeMessage.style.display = 'none'; // 웰컴 메시지 제거
+                        }
+                        document.getElementById('placeholder-image').style.display = 'none';
+                        document.getElementById('start-camera').style.display = 'none';
+                        document.getElementById('video-container').style.display = 'flex';
+                        document.getElementById('sentence-container').style.display = 'block';
+                        document.getElementById('video-feed').src = "{{ url_for('video_feed') }}";
+                    } else {
+                        alert("카메라를 열 수 없습니다: " + data.status);
+                        console.error("Camera error: " + data.status);
+                    }
+                })
+                .catch(error => {
+                    console.error('Camera initialization error:', error);
+                });
+        }
+        function updateSentence() {
+            fetch('/get_sentence', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    const sentenceElement = document.getElementById('sentence');
+                    sentenceElement.innerText = data.sentence;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function completeSentence() {
+            fetch('/complete_sentence', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    updateSentence();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function clearSentence() {
+            fetch('/clear_sentence', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    updateSentence();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        setInterval(updateSentence, 1000); // 1초마다 문장 업데이트
+    </script>
+</body>
+</html>
