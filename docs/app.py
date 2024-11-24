@@ -4,16 +4,24 @@ import mediapipe as mp
 import pickle
 import numpy as np
 import time
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.abspath(os.getcwd()))
 
-# 머신러닝 모델 로드
-with open("C:/Users/user/Projects/ASL/web/voting_cross_validated.pkl", "rb") as f:
+print("Flask working directory:", os.getcwd())
+print("Looking for templates in:", os.path.abspath("docs"))
+
+
+print("Loading model...")
+with open("voting_cross_validated.pkl", "rb") as f:
     model = pickle.load(f)
+print("Model loaded successfully.")
 
 # Mediapipe 설정
+print("Initializing Mediapipe...")
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7)
+print("Mediapipe initialized successfully.")
 mp_drawing = mp.solutions.drawing_utils
 
 # 카메라 초기화 변수
@@ -94,11 +102,13 @@ def generate_frames():
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-        
     
+
 @app.route('/')
 def index():
+    # Render index.html and pass the sentence variable
     return render_template('index.html', sentence=sentence)
+
 
 @app.route('/video_feed')
 def video_feed():
@@ -146,7 +156,9 @@ def get_sentence():
     return jsonify({"sentence": sentence})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print("Starting Flask server...")
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
+
 
 
 
