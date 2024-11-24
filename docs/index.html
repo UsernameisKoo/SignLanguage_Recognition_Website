@@ -76,7 +76,7 @@
             left: 15%; /* 화면 왼쪽에서 위치 */
             width: 90%; /* 전체 화면 대비 가로 비율 */
             height: 100%; /* 전체 화면 대비 세로 비율 */
-            background-image: url("{{ url_for('static', filename='images/background.jpg') }}"); /* 이미지 경로 */
+            background-image: url("static/images/background.jpg");
             background-size: contain; /* 이미지 비율 유지하며 전체 표시 */
             background-repeat: no-repeat; /* 반복 방지 */
             z-index: -1; /* 가장 아래 레이어로 설정 */
@@ -276,7 +276,11 @@
                         document.getElementById('start-camera').style.display = 'none';
                         document.getElementById('video-container').style.display = 'flex';
                         document.getElementById('sentence-container').style.display = 'block';
-                        document.getElementById('video-feed').src = "{{ url_for('video_feed') }}";
+                        // Flask에서 렌더링된 URL을 동적으로 JavaScript로 전달
+                        const videoFeedUrl = "{{ url_for('video_feed') }}";
+
+                        // video-feed 요소의 src 속성 설정
+                        document.getElementById('video-feed').src = videoFeedUrl;
                     } else {
                         alert("카메라를 열 수 없습니다: " + data.status);
                         console.error("Camera error: " + data.status);
