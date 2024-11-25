@@ -48,14 +48,16 @@ voting_model = VotingClassifier(
     estimators=[('rf', rf_model), ('dt', dt_model), ('svm', svm_model), ('knn', knn_model)], voting='soft'
 )
 
-# 교차 검증
-cv_scores = cross_val_score(voting_model, X, y, cv=5)  # 5-폴드 교차 검증
+# 교차 검증: 훈련 데이터에서만 수행
+cv_scores = cross_val_score(voting_model, X_train, y_train, cv=5)  # 5-폴드 교차 검증
 print(f"Voting 앙상블 교차 검증 정확도: {cv_scores.mean() * 100:.2f}% ± {cv_scores.std() * 100:.2f}%")
 
-# VotingClassifier 학습
+# VotingClassifier 학습: 훈련 데이터로 학습
 voting_model.fit(X_train, y_train)
 
-
+# 테스트 데이터 평가
+test_accuracy = voting_model.score(X_test, y_test)
+print(f"테스트 데이터 정확도: {test_accuracy * 100:.2f}%")
 
 # 학습된 모델 저장
 with open("voting_cross_validated.p", "wb") as f:
