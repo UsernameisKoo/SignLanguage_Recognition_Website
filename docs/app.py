@@ -160,9 +160,3 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
 
 
-
-
-
-
-# http://127.0.0.1:5000/video_feed
-# "C:/Users/user/Projects/ASL/web/voting_cross_validated.pkl"
