@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Language Recognition</title>
     <style>
+        html {
+            font-size: 12px; /* 기본 폰트 크기 */
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,7 +24,7 @@
             width: 13%;
             height: 100%;
             background-color: #007BFF;
-            padding: 20px;
+            padding: 1.6rem;
             color: white;
             display: flex;
             flex-direction: column;
@@ -29,8 +32,8 @@
         }
 
         #menu h2 {
-            font-size: 24px;
-            margin: 0 0 20px;
+            font-size: 2rem;
+            margin: 0 0 1.6rem;
             text-align: center;
         }
 
@@ -40,40 +43,40 @@
         }
 
         #menu ul li {
-            margin: 15px 0;
-            font-size: 18px;
+            margin: 1.25rem 0;
+            font-size: 1.5rem;
             cursor: pointer;
         }
 
         #menu ul li:hover {
             background-color: #0056b3;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 0.41rem;
+            border-radius: 0.41rem;
         }
 
         #title {
             position: fixed;
-            top: 10px;
+            top: 0.65rem;
             width: 100%;
             text-align: center;
         }
 
         #title h1 {
-            font-size: 36px;
+            font-size: 3rem;
             margin: 0;
         }
 
         #title hr {
-            margin: 10px auto;
+            margin: 0.83rem auto;
             width: 100%;
             border: none;
-            border-top: 4px solid #007BFF;
+            border-top: 0.4rem solid #007BFF;
         }
 
         #placeholder-image {
             position: fixed;
-            top: 6.5%; /* 화면 상단에서 위치 */
-            left: 7%; /* 화면 왼쪽에서 위치 */
+            top: 5rem; /* 화면 상단에서 위치 */
+            left: 2.4rem; /* 화면 왼쪽에서 위치 */
             width: 90%; /* 전체 화면 대비 가로 비율 */
             height: 100%; /* 전체 화면 대비 세로 비율 */
             background-image: url("{{ url_for('static', filename='images/background.jpg') }}"); /* 이미지 경로 */
@@ -87,27 +90,27 @@
             position: fixed;
             top: 20%;
             left: 18%;
-            width: 640px;
-            height: 480px;
+            width: 53.33rem;
+            height: 40rem;
             display: none;
             justify-content: center;
             align-items: center;
-            border: 4px solid #007BFF;
-            border-radius: 10px;
+            border: 0.4rem solid #007BFF;
+            border-radius: 0.8rem;
         }
 
         #start-camera {
             position: fixed;
-            top: 35%;
-            right: 42%;
+            top: 21rem;
+            right: 52.5rem;
             cursor: pointer;
             color: #007BFF;
-            font-size: 20px;
+            font-size: 1.6rem;
             text-align: center;
-            padding: 10px;
+            padding: 0.83rem;
             background-color: white;
-            border: 4px solid #007BFF;
-            border-radius: 10px;
+            border: 0.33rem solid #007BFF;
+            border-radius: 0.83rem;
             transition: background-color 0.3s;
         }
 
@@ -117,25 +120,25 @@
         }
         #sentence-container {
             position: fixed;
-            top: 20%;
-            right: 2%;
-            font-size: 18px;
+            top: 11rem;
+            right: 2.5rem;
+            font-size: 1.5rem;
             color: #333;
-            padding: 20px;
+            padding: 1.66rem;
             background-color: #FFFFFF;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 500px;
-            min-height: 150px;
+            border: 0.08rem solid #ccc;
+            border-radius: 0.41rem;
+            width: 41.66rem;
+            min-height: 12.5rem;
             text-align: left;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0.33rem 0.66rem rgba(0, 0, 0, 0.1);
         }
         #sentence-container h2 {
-            margin: 0 0 10px 0;
-            font-size: 20px;
+            margin: 0 0 0.83rem 0;
+            font-size: 1.6rem;
         }
         #sentence {
             display: inline;
@@ -143,7 +146,7 @@
         }
         .cursor {
             display: inline-block;
-            width: 2px;
+            width: 0.16rem;
             height: 1em;
             background-color: #333;
             vertical-align: bottom;
@@ -156,20 +159,20 @@
         }
         #underline {
             width: 100%;
-            height: 2px;
+            height: 0.16rem;
             background-color: #007BFF;
-            margin-top: 10px;
+            margin-top: 0.83rem;
         }
         #action-buttons {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 1.25rem;
         }
         .button {
-            margin: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
+            margin: 0.41rem;
+            padding: 0.83rem 1.66rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 0.66rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -179,45 +182,45 @@
         .button.clear {
             background-color: white; /* White background */
             color: #007bff; /* Blue text */
-            border: 2px solid #007bff; /* Blue border */
+            border: 0.16rem solid #007bff; /* Blue border */
         }
 
         .button.complete:hover,
         .button.clear:hover {
             background-color: #007bff; /* Blue background on hover */
             color: white; /* White text on hover */
-            border: 2px solid #007bff; /* Blue border stays the same */
+            border: 0.16rem solid #007bff; /* Blue border stays the same */
         }
 
         .button.complete:active,
         .button.clear:active {
             background-color: #007bff; /* Blue background on click */
             color: white; /* White text on click */
-            border: 2px solid #007bff; /* Blue border stays the same */
+            border: 0.16rem solid #007bff; /* Blue border stays the same */
         }
 
         #translate-container {
             position: fixed;
-            top: 45%; /* Sentence 박스 아래로 25% 더 내려감 */
-            right: 2%;
-            font-size: 18px;
+            top: 30rem; /* Sentence 박스 아래로 25% 더 내려감 */
+            right: 2.5rem;
+            font-size: 1.5rem;
             color: #333;
-            padding: 20px;
+            padding: 1.66rem;
             background-color: #FFFFFF;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 500px;
-            min-height: 150px;
+            border: 0.08rem solid #ccc;
+            border-radius: 0.41rem;
+            width: 41.66rem;
+            min-height: 12.5rem;
             text-align: left;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0.33rem 0.66rem rgba(0, 0, 0, 0.1);
         }
 
         #translate-container h2 {
-            margin: 0 0 10px 0;
-            font-size: 20px;
+            margin: 0 0 0.83rem 0;
+            font-size: 1.6rem;
         }
 
         #welcome-message {
@@ -226,12 +229,11 @@
             right: 5%; /* 화면 오른쪽에서의 위치 */
             width: 44%; /* 메시지의 가로 폭 */
             font-family: Arial, sans-serif;
-            font-size: 18px;
+            font-size: 1.5rem;
             line-height: 1.6;
             color: #333;
             text-align: left; /* 텍스트를 왼쪽 정렬 */
-            padding: 20px; /* 내부 여백 추가 */
-            background-color: #FFFFFF; /* 배경색 */
+            padding: 1.66rem; /* 내부 여백 추가 */
             transition: opacity 0.5s ease; /* 사라질 때 부드러운 효과 */
         }
         

@@ -6,6 +6,7 @@ import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 import time
 from gpt import process_data
+import os
 
 app = Flask(__name__)
 
@@ -23,7 +24,10 @@ camera_active = False
 cap = None
 
 # 한글 폰트 설정
-font_path = "malgun.ttf"  # Windows 환경에서 사용할 폰트 파일 경로
+if os.name == 'nt':  # Windows
+    font_path = "malgun.ttf"
+else:  # MacOS/Linux
+    font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
 font = ImageFont.truetype(font_path, 30)
 
 # 제스처 인식 변수
@@ -103,12 +107,20 @@ def generate_frames():
                     last_detected_time = now
 
         # 화면에 현재 알파벳 및 문장 표시 (PIL로 한글 지원)
+        # 텍스트 렌더링
         frame_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         draw = ImageDraw.Draw(frame_pil)
+        if current_alphabet:
+            x, y = 20, 30
+            text = f'현재: {current_alphabet}'
+            draw.text((x+1, y+1), text, font=font, fill=(0, 0, 0))  # 그림자
+            draw.text((x, y), text, font=font, fill=(0, 255, 0))  # 텍스트
+
+        frame = cv2.cvtColor(np.array(frame_pil), cv2.COLOR_RGB2BGR)
 
         # 한글 텍스트 표시
         if current_alphabet:
-            draw.text((10, 30), f'현재: {current_alphabet}', font=font, fill=(0, 255, 0))
+            draw.text((20, 30), f'현재: {current_alphabet}', font=font, fill=(0, 255, 0))
 
         # PIL 이미지를 다시 OpenCV 형식으로 변환
         frame = cv2.cvtColor(np.array(frame_pil), cv2.COLOR_RGB2BGR)
@@ -185,8 +197,4 @@ if __name__ == '__main__':
 
 
 
-
-
-# http://127.0.0.1:5000/video_feed
-# "C:/Users/user/Projects/ASL/web/voting_cross_validated.pkl"
 
